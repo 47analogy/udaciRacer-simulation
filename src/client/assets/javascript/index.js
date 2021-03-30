@@ -16,8 +16,7 @@ document.addEventListener('DOMContentLoaded', function () {
 async function onPageLoad() {
   try {
     getTracks().then((tracks) => {
-      console.log('tracks', tracks);
-      const html = renderTrackCards(tracks);
+      const html = renderTrackCards(tracks); // list of track cards
       renderAt('#tracks', html);
     });
 
@@ -80,7 +79,7 @@ async function handleCreateRace() {
   renderAt('#race', renderRaceStartView());
 
   // TODO - Get player_id and track_id from the store
-  console.log('store', store);
+  console.log('store');
 
   // const race = TODO - invoke the API call to create the race, then save the result
 
@@ -145,6 +144,8 @@ function handleSelectPodRacer(target) {
   target.classList.add('selected');
 
   // TODO - save the selected racer to the store
+  const racer = target.id;
+  store.race_id = racer;
 }
 
 function handleSelectTrack(target) {
@@ -152,6 +153,7 @@ function handleSelectTrack(target) {
 
   // remove class selected from all track options
   const selected = document.querySelector('#tracks .selected');
+
   if (selected) {
     selected.classList.remove('selected');
   }
@@ -160,6 +162,8 @@ function handleSelectTrack(target) {
   target.classList.add('selected');
 
   // TODO - save the selected track id to the store
+  const trackId = target.id;
+  store.track_id = trackId;
 }
 
 function handleAccelerate() {
@@ -181,7 +185,7 @@ function renderRacerCars(racers) {
 
   return `
 		<ul id="racers">
-			${reuslts}
+			${results}
 		</ul>
 	`;
 }
@@ -206,7 +210,7 @@ function renderTrackCards(tracks) {
 		`;
   }
 
-  const results = tracks.map(renderTrackCard).join('');
+  const results = tracks.map(renderTrackCard).join(''); // whats going on here?
 
   return `
 		<ul id="tracks">
@@ -293,6 +297,7 @@ function raceProgress(positions) {
 	`;
 }
 
+// creates DOM element and inserts content
 function renderAt(element, html) {
   const node = document.querySelector(element);
 
@@ -317,11 +322,10 @@ function defaultFetchOpts() {
 
 // TODO - Make a fetch call (with error handling!) to each of the following API endpoints
 
-function getTracks() {
+async function getTracks() {
   // GET request to `${SERVER}/api/tracks`
-  return fetch(`${SERVER}/api/tracks`)
+  return await fetch(`${SERVER}/api/tracks`)
     .then((res) => res.json())
-    .then((json) => console.log(json))
     .catch((err) => console.log(err));
 }
 
@@ -329,7 +333,6 @@ function getRacers() {
   // GET request to `${SERVER}/api/cars`
   return fetch(`${SERVER}/api/cars`)
     .then((res) => res.json())
-    .then((json) => console.log(json))
     .catch((err) => console.log(err));
 }
 
@@ -352,7 +355,7 @@ function getRace(id) {
   // GET request to `${SERVER}/api/races/${id}`
   return fetch(`${SERVER}/api/races/${id}`)
     .then((res) => res.json())
-    .then((json) => console.log(json))
+    .then((json) => console.log('race id', json))
     .catch((err) => console.log(err));
 }
 
